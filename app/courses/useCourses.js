@@ -1,8 +1,9 @@
 "use client";
 
+import { useEffect } from "react";
 import { getSortedCourses } from "@/app/_lib/data-service";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import useFilterStore from "@/app/_utils/filter-store";
 import PAGE_SIZE from "@/app/_utils/constants";
 
@@ -26,6 +27,10 @@ const validRatings = [0, 1, 2, 3, 4];
 
 const validBackendTags = ["all", "special-offer", "new", "best-seller"];
 
+const validSortBy = ["amount"];
+
+const validSortOrder = ["asc", "desc"];
+
 const formatTagForBackend = (tagInput) => {
   if (!tagInput || tagInput.toLowerCase() === "all") return null;
   return tagInput.toLowerCase().replace(/\s+/g, "-");
@@ -33,6 +38,8 @@ const formatTagForBackend = (tagInput) => {
 
 export default function useCourses() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const activeTab = useFilterStore((state) => state.activeTab);
   const queryClient = useQueryClient();
 
@@ -73,9 +80,18 @@ export default function useCourses() {
 
   const rawLevels = searchParams.getAll("level").map((l) => l.toLowerCase());
   const levelValues = rawLevels.filter((l) => validLevels.includes(l));
+  const levelValuesKey = levelValues.sort().join(",");
 
-  const sortBy = searchParams.get("sort_by") || null;
-  const sortOrder = searchParams.get("sort_order") || (sortBy ? "desc" : null);
+  const rawSortBy = searchParams.get("sort_by")?.toLowerCase();
+  const sortBy = rawSortBy && validSortBy.includes(rawSortBy) ? rawSortBy : null;
+
+  const rawSortOrder = searchParams.get("sort_order")?.toLowerCase();
+  const sortOrder =
+    rawSortOrder && validSortOrder.includes(rawSortOrder)
+      ? rawSortOrder
+      : sortBy
+        ? "desc"
+        : null;
 
   const page = !searchParams.get("page") ? 1 : Number(searchParams.get("page"));
   const limit = !searchParams.get("limit")
@@ -85,7 +101,7 @@ export default function useCourses() {
   const rawTagFromUrl = searchParams.get("tags");
   const formattedTagForInternalUse = formatTagForBackend(rawTagFromUrl);
   const tagValue = validBackendTags.includes(
-    formattedTagForInternalUse || "all"
+    formattedTagForInternalUse || "all",
   )
     ? formattedTagForInternalUse
     : "all";
@@ -102,7 +118,7 @@ export default function useCourses() {
       maxAmountParam,
       minRating,
       applyPriceFilterFrontend,
-      levelValues.sort().join(","),
+      levelValuesKey,
       sortBy,
       sortOrder,
       tagValue,
@@ -119,6 +135,8 @@ export default function useCourses() {
         sortOrder: sortOrder,
         tag: backendTagParam,
       }),
+    staleTime: 5 * 60 * 1000, // 5 minutes - data stays fresh, won't refetch
+    gcTime: 10 * 60 * 1000, // 10 minutes - keep in cache even when unused
   });
 
   let courses = data?.courses || [];
@@ -136,7 +154,8 @@ export default function useCourses() {
   if (levelValues.length > 0) {
     courses = courses.filter(
       (course) =>
-        course.level && levelValues.includes(String(course.level).toLowerCase())
+        course.level &&
+        levelValues.includes(String(course.level).toLowerCase()),
     );
   }
 
@@ -144,71 +163,105 @@ export default function useCourses() {
 
   const pageCount = Math.ceil(backendTotalCount / limit);
 
-  // if (page < pageCount) {
-  //   setTimeout(() => {
-  //     queryClient.prefetchQuery({
-  //       queryKey: [
-  //         "courses",
-  //         examValue,
-  //         page + 1,
-  //         limit,
-  //         minAmountParam,
-  //         maxAmountParam,
-  //         minRating,
-  //         applyPriceFilterFrontend,
-  //         levelValues.sort().join(","),
-  //         sortBy,
-  //         sortOrder,
-  //         tagValue,
-  //       ],
-  //       queryFn: () =>
-  //         getSortedCourses({
-  //           examValue,
-  //           page: page + 1,
-  //           limit,
-  //           minAmount: minAmountParam,
-  //           maxAmount: maxAmountParam,
-  //           minRating,
-  //           sortBy: sortBy,
-  //           sortOrder: sortOrder,
-  //           tag: backendTagParam,
-  //         }),
-  //     });
-  //   }, 300);
-  // }
+  // Redirect to last valid page if URL has invalid page number
+  useEffect(() => {
+    if (pageCount > 0 && page > pageCount) {
+      const params = new URLSearchParams(searchParams);
+      params.set("page", pageCount.toString());
+      router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+    }
+  }, [page, pageCount, pathname, router, searchParams]);
 
-  // if (page > 1) {
-  //   setTimeout(() => {
-  //     queryClient.prefetchQuery({
-  //       queryKey: [
-  //         "courses",
-  //         examValue,
-  //         page - 1,
-  //         limit,
-  //         minAmountParam,
-  //         maxAmountParam,
-  //         minRating,
-  //         applyPriceFilterFrontend,
-  //         levelValues.sort().join(","),
-  //         sortBy,
-  //         sortOrder,
-  //         tagValue,
-  //       ],
-  //       queryFn: () =>
-  //         getSortedCourses({
-  //           examValue,
-  //           page: page - 1,
-  //           limit,
-  //           minAmount: minAmountParam,
-  //           maxAmount: maxAmountParam,
-  //           minRating,
-  //           sortBy: sortBy,
-  //           sortOrder: sortOrder,
-  //           tag: backendTagParam,
-  //         }),
-  //     });
-  //   }, 300);
-  // }
+  // Prefetch adjacent pages when page/filters change
+  useEffect(() => {
+    // Prefetch next page
+    if (page < pageCount) {
+      queryClient.prefetchQuery({
+        queryKey: [
+          "courses",
+          examValue,
+          page + 1,
+          limit,
+          minAmountParam,
+          maxAmountParam,
+          minRating,
+          applyPriceFilterFrontend,
+          levelValuesKey,
+          sortBy,
+          sortOrder,
+          tagValue,
+        ],
+        queryFn: () =>
+          getSortedCourses({
+            examValue,
+            page: page + 1,
+            limit,
+            minAmount: minAmountParam,
+            maxAmount: maxAmountParam,
+            minRating,
+            sortBy,
+            sortOrder,
+            tag: backendTagParam,
+          }),
+        staleTime: 5 * 60 * 1000,
+        gcTime: 10 * 60 * 1000,
+      });
+    }
+
+    // Prefetch previous page
+    if (page > 1) {
+      queryClient.prefetchQuery({
+        queryKey: [
+          "courses",
+          examValue,
+          page - 1,
+          limit,
+          minAmountParam,
+          maxAmountParam,
+          minRating,
+          applyPriceFilterFrontend,
+          levelValuesKey,
+          sortBy,
+          sortOrder,
+          tagValue,
+        ],
+        queryFn: () =>
+          getSortedCourses({
+            examValue,
+            page: page - 1,
+            limit,
+            minAmount: minAmountParam,
+            maxAmount: maxAmountParam,
+            minRating,
+            sortBy,
+            sortOrder,
+            tag: backendTagParam,
+          }),
+        staleTime: 5 * 60 * 1000,
+        gcTime: 10 * 60 * 1000,
+      });
+    }
+  }, [
+    page,
+    pageCount,
+    examValue,
+    limit,
+    minAmountParam,
+    maxAmountParam,
+    minRating,
+    applyPriceFilterFrontend,
+    levelValuesKey,
+    sortBy,
+    sortOrder,
+    tagValue,
+    backendTagParam,
+    queryClient,
+  ]);
+
+  // Early return if page is invalid - prevents flash of "Page X of Y" before redirect
+  if (pageCount > 0 && page > pageCount) {
+    return { isLoading: true, isFetching: false, error: null, courses: [], count: 0 };
+  }
 
   return { isLoading, isFetching, error, courses, count: backendTotalCount };
 }

@@ -130,6 +130,10 @@
   margin-left: 8px;
 }
 
+.scrollButtonCarrier {
+  display: none;
+}
+
 @media screen and (min-width: 400px) {
   .courseGrid,
   .courseGridB {
@@ -235,6 +239,7 @@
   .bottom {
     border-left: 1px solid #cbd5e1;
     width: 70%;
+    position: relative;
   }
   .border {
     /* border-right: 1px solid #cbd5e1; */
@@ -287,7 +292,10 @@
     align-items: start;
     padding-left: 30px;
     overflow-x: auto;
-    /* mask-image: linear-gradient(to right, #000 0% 96%, transparent 100%); */
+    mask-image: linear-gradient(to right, #000 0% 96%, transparent 100%);
+  }
+  .gridWrapper.atEnd {
+    mask-image: none;
   }
   .gridWrapper::-webkit-scrollbar {
     display: none;
@@ -307,6 +315,10 @@
   }
   .courseGridB {
     width: unset;
+  }
+
+  .scrollButtonCarrier {
+    display: block;
   }
 }
 

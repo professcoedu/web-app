@@ -1,6 +1,60 @@
 "use client";
+import { useRef } from "react";
 import { useMediaQuery } from "@mui/material";
 import styles from "./InstructorsTab.module.css";
+import ScrollButton from "@/app/_components/common/ScrollButton/ScrollButton";
+import useScrollEnd from "@/app/_components/common/ScrollButton/useScrollEnd";
+
+function InstructorCourseGrid({ lg }) {
+  const gridWrapperRef = useRef(null);
+  const isAtEnd = useScrollEnd(gridWrapperRef);
+
+  return (
+    <div className={styles.gridWrapperContainer}>
+      <div
+        className={`${styles.gridWrapper} ${isAtEnd ? styles.atEnd : ""}`}
+        ref={gridWrapperRef}
+      >
+        <div className={styles.cardGrid}>
+          {[...Array(3)].map((_, index) => (
+            <div className={styles.card} key={index}>
+              <div className={styles.banner}>
+                <img
+                  src={`/images/course-banner-${lg ? "md" : "sm"}.png`}
+                  alt="banner"
+                  className={styles.banner}
+                />
+              </div>
+
+              <div className={styles.cardInfo}>
+                <p className={`${styles.cardTitle} boldFont`}>
+                  BA1 Fundamentals of Business Economics
+                </p>
+                <p className={`${styles.cardType}`}>ICAN</p>
+                <div className={styles.rating}>
+                  <img
+                    src="/images/blackstar.svg"
+                    alt="star"
+                    className={styles.blackstar}
+                  />
+                  <p style={{ fontSize: "14px", lineHeight: "20px" }}>
+                    4.8 (150 reviews)
+                  </p>
+                </div>
+                <p className={styles.cardTxt}>
+                  <span>What you'll learn: </span>Macroeconomic...
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className={styles.scrollButtonCarrier}>
+        <ScrollButton containerRef={gridWrapperRef} scrollAmount={424} />
+      </div>
+    </div>
+  );
+}
 
 export default function InstructorsTab({ course }) {
   const lg = useMediaQuery("(min-width: 400px)");
@@ -57,41 +111,7 @@ export default function InstructorsTab({ course }) {
               </div>
 
               <div className={styles.dividerB}></div>
-              <div className={styles.gridWrapper}>
-                <div className={styles.cardGrid}>
-                  {[...Array(3)].map((_, index) => (
-                    <div className={styles.card} key={index}>
-                      <div className={styles.banner}>
-                        <img
-                          src={`/images/course-banner-${lg ? "md" : "sm"}.png`}
-                          alt="banner"
-                          className={styles.banner}
-                        />
-                      </div>
-
-                      <div className={styles.cardInfo}>
-                        <p className={`${styles.cardTitle} boldFont`}>
-                          BA1 Fundamentals of Business Economics
-                        </p>
-                        <p className={`${styles.cardType}`}>ICAN</p>
-                        <div className={styles.rating}>
-                          <img
-                            src="/images/blackstar.svg"
-                            alt="star"
-                            className={styles.blackstar}
-                          />
-                          <p style={{ fontSize: "14px", lineHeight: "20px" }}>
-                            4.8 (150 reviews)
-                          </p>
-                        </div>
-                        <p className={styles.cardTxt}>
-                          <span>What you'll learn: </span>Macroeconomic...
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <InstructorCourseGrid lg={lg} />
             </div>
             <p className={styles.moreInfo}>
               Tim Buchalka

@@ -142,6 +142,10 @@
   margin-top: 16px; /* Adjust the value as needed */
 }
 
+.scrollButtonCarrier {
+  display: none;
+}
+
 @media screen and (min-width: 400px) {
   .banner {
     width: 127px;
@@ -165,11 +169,18 @@
 }
 
 @media screen and (min-width: 500px) {
+  .gridWrapperContainer {
+    position: relative;
+  }
+
   .gridWrapper {
     overflow-x: auto;
     width: 480px;
     /* overflow: hidden; */
     mask-image: linear-gradient(to right, #000 0% 95%, transparent 100%);
+  }
+  .gridWrapper.atEnd {
+    mask-image: none;
   }
 
   .gridWrapper::-webkit-scrollbar {
@@ -199,6 +210,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: normal;
+  }
+
+  .scrollButtonCarrier {
+    display: block;
   }
 }
 

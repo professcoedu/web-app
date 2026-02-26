@@ -21,7 +21,7 @@ export async function POST(request) {
     if (!response.ok) {
       return NextResponse.json(
         { message: data.message || "Login failed" },
-        { status: response.status }
+        { status: response.status },
       );
     }
 
@@ -31,7 +31,7 @@ export async function POST(request) {
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
+      maxAge: 60 * 60 * 24 * 7,
     });
 
     return NextResponse.json({ profile: data.profile });
@@ -39,7 +39,7 @@ export async function POST(request) {
     console.error("Login route error:", error);
     return NextResponse.json(
       { message: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

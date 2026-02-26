@@ -12,6 +12,8 @@ import Pagination from "@/app/_components/common/Pagination/Pagination";
 import Filter from "@/app/_components/common/Filter/Filter";
 import Overlay from "@/app/_components/common/Overlay/Overlay";
 import Skeleton from "@/app/_components/common/Skeleton/Skeleton";
+import ScrollButton from "@/app/_components/common/ScrollButton/ScrollButton";
+import useScrollEnd from "@/app/_components/common/ScrollButton/useScrollEnd";
 
 export default function CourseList({
   showAll,
@@ -26,6 +28,8 @@ export default function CourseList({
   const [open, setOpen] = useState(false);
   const sidebarRef = useRef(null);
   const filterButtonRef = useRef(null);
+  const gridWrapperRef = useRef(null);
+  const isAtEnd = useScrollEnd(gridWrapperRef);
 
   const md = useMediaQuery("(min-width: 600px)");
   const md2 = useMediaQuery("(min-width: 850px)");
@@ -126,7 +130,10 @@ export default function CourseList({
               searchedCourses.length === 0 ? "" : styles.borderB
             }`}
           >
-            <div className={styles.gridWrapper}>
+            <div
+              className={`${styles.gridWrapper} ${isAtEnd ? styles.atEnd : ""}`}
+              ref={gridWrapperRef}
+            >
               {loading ? (
                 <div className={styles.courseGrid}>
                   {Array.from({
@@ -142,6 +149,9 @@ export default function CourseList({
                   ))}
                 </div>
               )}
+            </div>
+            <div className={styles.scrollButtonCarrier}>
+              <ScrollButton containerRef={gridWrapperRef} scrollAmount={318} />
             </div>
           </div>
         </>

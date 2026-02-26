@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./LoginForm.module.css";
 import { useState } from "react";
 import { useMediaQuery } from "@mui/material";
@@ -13,6 +13,8 @@ export default function LoginForm() {
 
   const lg = useMediaQuery("(min-width: 1200px)");
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectPath = searchParams.get("redirect");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -41,7 +43,7 @@ export default function LoginForm() {
 
       setUser(response.profile);
 
-      router.push("/");
+      router.push(redirectPath || "/");
     } catch (err) {
       setError(err.message || "Login failed. Please try again.");
       setIsSubmitting(false);

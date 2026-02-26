@@ -6,6 +6,10 @@
   margin-top: 32px;
 }
 
+.scrollButtonCarrier {
+  display: none;
+}
+
 @media screen and (min-width: 600px) {
   .grid {
     width: unset;
@@ -16,8 +20,11 @@
 @media screen and (min-width: 1000px) {
   .gridWrapper {
     overflow-x: auto;
-    /* mask-image: linear-gradient(to right, #000 0% 96%, transparent 100%); */
+    mask-image: linear-gradient(to right, #000 0% 96%, transparent 100%);
     padding-left: 24px;
+  }
+  .gridWrapper.atEnd {
+    mask-image: none;
   }
   .gridWrapper::-webkit-scrollbar {
     display: none;
@@ -26,5 +33,9 @@
     width: unset;
     grid-template-columns: repeat(5, 288px);
     margin: 0;
+  }
+
+  .scrollButtonCarrier {
+    display: block;
   }
 }

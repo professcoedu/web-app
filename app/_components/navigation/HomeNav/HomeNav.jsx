@@ -6,6 +6,7 @@ import SearchBar from "@/app/_components/navigation/SearchBar/SearchBar";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Drawer from "@/app/_components/navigation/Drawer/Drawer";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import useAuthStore from "@/app/_utils/auth-store";
 import useCartStore from "@/app/_utils/cart-store";
 import { logout as logoutService } from "@/app/_lib/auth-service";
@@ -17,6 +18,8 @@ export default function HomeNav() {
   const isLoading = useAuthStore((state) => state.isLoading);
   const clearUser = useAuthStore((state) => state.clearUser);
   const cart = useCartStore((state) => state.cart);
+  const pathname = usePathname();
+  const router = useRouter();
 
   const toggleDrawer = (event) => {
     if (
@@ -38,6 +41,10 @@ export default function HomeNav() {
       console.error("Logout error:", error);
     }
     clearUser();
+
+    if (pathname.startsWith("/student")) {
+      router.push("/");
+    }
   };
 
   return (
