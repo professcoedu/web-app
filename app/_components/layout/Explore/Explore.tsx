@@ -1,17 +1,21 @@
 "use client";
 
-import { Suspense } from "react";
-import Spinner from "@/app/_components/layout/Spinner/Spinner";
+import { motion } from "framer-motion";
+import ExamCard from "@/app/_components/common/ExamCard/ExamCard";
+import AnimateUp from "@/app/_components/common/AnimateUp/AnimateUp";
+import AnimatedHeroTitle from "@/app/_components/common/AnimatedHeroTitle/AnimatedHeroTitle";
 import { examTabs } from "@/app/_utils/data";
 import styles from "./Explore.module.css";
-import dynamic from "next/dynamic";
 
-const ExamCard = dynamic(
-  () => import("@/app/_components/common/ExamCard/ExamCard"),
-  {
-    ssr: false,
-  },
-);
+const gridVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, x: -60 },
+  visible: { opacity: 1, x: 0 },
+};
 
 export default function Explore() {
   return (
@@ -19,24 +23,41 @@ export default function Explore() {
       <div className={`container ${styles.box}`}>
         <div className={styles.top}>
           <p style={{ color: "#4B5563" }}>Available on Professco.</p>
-          <h1 className="boldFont">Explore Professco</h1>
-          <p className={styles.txt}>
+          <AnimateUp as="h1" className="boldFont">
+            Explore Professco
+          </AnimateUp>
+          <AnimatedHeroTitle
+            as="p"
+            className={styles.txt}
+            from="above"
+            delay={0.4}
+            viewportTrigger
+          >
             Learn from verified/certified Professionals in various fields with
             high performance, accomplishments/reputation and proven track
             records.
-          </p>
+          </AnimatedHeroTitle>
         </div>
 
         <div className={styles.bottom}>
-          <div className={styles.examGrid}>
+          <motion.div
+            className={styles.examGrid}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={gridVariants}
+          >
             {examTabs.map((exam) => (
-              <Suspense key={exam.id} fallback={<Spinner />}>
-                <div className={styles.card}>
-                  <ExamCard exam={exam} />
-                </div>
-              </Suspense>
+              <motion.div
+                key={exam.id}
+                className={styles.card}
+                variants={cardVariants}
+                transition={{ type: "spring", duration: 0.8, bounce: 0.15 }}
+              >
+                <ExamCard exam={exam} />
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
       <section className={styles.seg}>

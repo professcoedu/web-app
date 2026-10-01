@@ -44,7 +44,7 @@ export default async function RootLayout({ children }) {
             <ContextProvider>
               <AuthSeeder initialAuth={initialAuth} />
               <PersonalizationGuard />
-              <HomeNav />
+              <HomeNav initialIsAuthenticated={initialAuth.isAuthenticated} />
               {children}
             </ContextProvider>
           </Providers>

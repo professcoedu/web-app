@@ -31,7 +31,7 @@
   height: 22px;
   padding: 0 6px;
   border-radius: 999px;
-  background: var(--primary-white-200, #f3f4f6);
+  background: #e4e5e7;
   font-size: 13px;
 }
 
@@ -67,4 +67,11 @@
 .list {
   display: flex;
   flex-direction: column;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 64px 0;
 }

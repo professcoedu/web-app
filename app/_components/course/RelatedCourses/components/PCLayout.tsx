@@ -14,7 +14,6 @@ interface Props {
   isAtEnd: boolean;
   scrollAxis: "horizontal" | "vertical";
   gridWrapperRef: RefObject<HTMLDivElement>;
-  ownedCourseIds: Set<number>;
 }
 
 export default function PCLayout({
@@ -26,7 +25,6 @@ export default function PCLayout({
   isAtEnd,
   scrollAxis,
   gridWrapperRef,
-  ownedCourseIds,
 }: Props) {
   return (
     <section className={styles.segPC}>
@@ -64,11 +62,7 @@ export default function PCLayout({
                   }`}
                 >
                   {courses.slice(0, previewCount).map((course) => (
-                    <CourseCard
-                      key={course.id}
-                      courseItem={course}
-                      isOwned={ownedCourseIds.has(course.id)}
-                    />
+                    <CourseCard key={course.id} courseItem={course} />
                   ))}
                 </div>
               )}

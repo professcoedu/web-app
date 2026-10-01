@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Notifs from "@/app/_components/common/Notifs/Notifs";
+import AnimatedHeroTitle from "@/app/_components/common/AnimatedHeroTitle/AnimatedHeroTitle";
 import styles from "./Segment.module.css";
 
 const cardVariants = {
@@ -14,19 +15,37 @@ export default function Segment() {
     <section className={styles.seg}>
       <div className="container">
         <div className={styles.frame}>
-          <h1 className="boldFont">
+          <motion.h1
+            className="boldFont"
+            initial={{ opacity: 0, y: 56 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.45 }}
+            transition={{ type: "spring", stiffness: 120, damping: 18 }}
+          >
             A professional learning platform <br /> <span>you can trust</span>
-          </h1>
+          </motion.h1>
           <div className={styles.content}>
             <div className={styles.box}>
-              <h3 className="boldFont">
+              <motion.h3
+                className="boldFont"
+                initial={{ opacity: 0, y: 56 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.45 }}
+                transition={{ type: "spring", stiffness: 120, damping: 18 }}
+              >
                 Verified lecturers with proven track record of success
-              </h3>
-              <p className={`lightFont ${styles.txt}`}>
+              </motion.h3>
+              <AnimatedHeroTitle
+                as="p"
+                className={`lightFont ${styles.txt}`}
+                from="above"
+                delay={0.4}
+                viewportTrigger
+              >
                 Meet qualified professionals and instructors with expertise in
                 various fields, ready to provide you top-grade (or first -
                 class) tutoring/training.
-              </p>
+              </AnimatedHeroTitle>
             </div>
 
             <motion.div

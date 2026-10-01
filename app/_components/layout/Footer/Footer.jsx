@@ -1,6 +1,8 @@
 "use client";
 import { examTabs, footerOptions } from "@/app/_utils/data";
 import Notifs from "@/app/_components/common/Notifs/Notifs";
+import AnimateUp from "@/app/_components/common/AnimateUp/AnimateUp";
+import AnimatedHeroTitle from "@/app/_components/common/AnimatedHeroTitle/AnimatedHeroTitle";
 import styles from "./Footer.module.css";
 import Link from "next/link";
 
@@ -37,12 +39,28 @@ export default function Footer({ showFull = true }) {
               </div>
             </div>
             <div className={styles.formbox}>
-              <h1 className="boldFont">Free materials & resources</h1>
-              <p style={{ margin: "24px 0 16px" }} className={styles.formTxt}>
+              <AnimateUp as="h1" className="boldFont">
+                Free materials & resources
+              </AnimateUp>
+              <AnimatedHeroTitle
+                as="p"
+                className={styles.formTxt}
+                style={{ margin: "24px 0 16px" }}
+                from="above"
+                delay={0.4}
+                viewportTrigger
+              >
                 Get free ebooks, PDFs, past questions and other resourecs to
                 help you get started as you prepare for your exams
-              </p>
-              <FooterForm />
+              </AnimatedHeroTitle>
+              <AnimatedHeroTitle
+                as="div"
+                from="above"
+                delay={0.8}
+                viewportTrigger
+              >
+                <FooterForm />
+              </AnimatedHeroTitle>
             </div>
           </div>
           <div className={styles.divider}></div>

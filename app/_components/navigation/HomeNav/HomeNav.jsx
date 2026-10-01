@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import styles from "./HomeNav.module.css";
 import SearchBar from "@/app/_components/navigation/SearchBar/SearchBar";
 import Drawer from "@/app/_components/navigation/Drawer/Drawer";
@@ -9,6 +9,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import useAuthStore from "@/app/_utils/auth-store";
 import useCartStore from "@/app/_utils/cart-store";
+import { useUnreadNotificationsCount } from "@/app/_hooks/useUnreadNotificationsCount";
 import { logout as logoutService } from "@/app/_lib/auth-service";
 
 const studentTabs = [
@@ -16,17 +17,24 @@ const studentTabs = [
   { label: "My courses", href: "/student/my-courses" },
 ];
 
-export default function HomeNav() {
+export default function HomeNav({ initialIsAuthenticated = false }) {
   const [openDrawer, setOpenDrawer] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const mobileMenuWrapperRef = useRef(null);
   const desktopMenuWrapperRef = useRef(null);
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  // zustand's server snapshot is the store's hard-coded initial state (logged out),
+  // so seed SSR/hydration from the cookie-derived prop to avoid a guest-nav flash.
+  const isAuthenticated = useSyncExternalStore(
+    useAuthStore.subscribe,
+    () => useAuthStore.getState().isAuthenticated,
+    () => initialIsAuthenticated,
+  );
   const user = useAuthStore((state) => state.user);
   const clearUser = useAuthStore((state) => state.clearUser);
   const cart = useCartStore((state) => state.cart);
   const pathname = usePathname();
   const router = useRouter();
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
 
   const fullName = `${user?.first_name ?? ""} ${user?.last_name ?? ""}`.trim();
 
@@ -179,6 +187,9 @@ export default function HomeNav() {
                     className={styles.bellLink}
                   >
                     <img src="/images/bell.svg" alt="notifications" />
+                    {unreadCount > 0 && (
+                      <span className={styles.bellBadge}>{unreadCount}</span>
+                    )}
                   </Link>
                   <div
                     className={styles.menuWrapper}

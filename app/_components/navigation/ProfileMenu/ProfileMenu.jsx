@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import LogoutModal from "./components/LogoutModal";
+import { useUnreadNotificationsCount } from "@/app/_hooks/useUnreadNotificationsCount";
 import styles from "./ProfileMenu.module.css";
 
 const navLinks = [
@@ -22,6 +23,7 @@ export default function ProfileMenu({
   showNavLinks = false,
 }) {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
 
   return (
     <div className={styles.menu}>
@@ -48,7 +50,12 @@ export default function ProfileMenu({
         {menuItems.map((item) => (
           <li key={item.href}>
             <Link href={item.href} onClick={onNavigate}>
-              <p>{item.label}</p>
+              <span className={styles.labelGroup}>
+                <p>{item.label}</p>
+                {item.label === "Notifications" && unreadCount > 0 && (
+                  <span className={styles.unreadBadge}>{unreadCount}</span>
+                )}
+              </span>
               <img src="/images/arrowright2.svg" alt="" />
             </Link>
           </li>

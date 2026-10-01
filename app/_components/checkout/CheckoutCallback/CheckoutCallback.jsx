@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
 import Loader from "@/app/_components/common/Loader/Loader";
 import useAuthStore from "@/app/_utils/auth-store";
 import { verifyPayment } from "@/app/_lib/payment-service";
@@ -15,6 +16,7 @@ export default function CheckoutCallback() {
   const searchParams = useSearchParams();
   const reference = searchParams.get("reference");
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const queryClient = useQueryClient();
 
   const [status, setStatus] = useState("loading");
   const [countdown, setCountdown] = useState(REDIRECT_SECONDS);
@@ -32,9 +34,15 @@ export default function CheckoutCallback() {
     verifyPayment(reference)
       .then((response) => {
         if (!isMounted) return;
-        setStatus(
-          response?.data?.payment_status === "completed" ? "success" : "failed",
-        );
+        const isSuccess = response?.data?.payment_status === "completed";
+        setStatus(isSuccess ? "success" : "failed");
+
+        if (isSuccess) {
+          queryClient.invalidateQueries({ queryKey: ["notifications"] });
+          queryClient.invalidateQueries({
+            queryKey: ["notifications-unread-count"],
+          });
+        }
       })
       .catch(() => {
         if (isMounted) setStatus("failed");

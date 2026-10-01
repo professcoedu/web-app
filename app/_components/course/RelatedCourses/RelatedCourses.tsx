@@ -38,7 +38,10 @@ export default function RelatedCourses({ courseId, courseType }: Props) {
   const ownedCourseIds = useOwnedCourseIds();
 
   const courses = relatedCourses
-    ? relatedCourses.filter((course) => course.id !== Number(courseId))
+    ? relatedCourses.filter(
+        (course) =>
+          course.id !== Number(courseId) && !ownedCourseIds.has(course.id),
+      )
     : [];
 
   return (
@@ -52,7 +55,6 @@ export default function RelatedCourses({ courseId, courseType }: Props) {
         isAtEnd={isAtEndMobile}
         scrollAxis={scrollAxis}
         gridWrapperRef={gridWrapperRefMobile}
-        ownedCourseIds={ownedCourseIds}
       />
       <PCLayout
         courses={courses}
@@ -63,7 +65,6 @@ export default function RelatedCourses({ courseId, courseType }: Props) {
         isAtEnd={isAtEndDesktop}
         scrollAxis={scrollAxis}
         gridWrapperRef={gridWrapperRefDesktop}
-        ownedCourseIds={ownedCourseIds}
       />
     </>
   );

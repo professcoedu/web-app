@@ -66,7 +66,9 @@ export default function CourseList({
     { value: "paid", name: "Paid" },
   ];
 
-  let filteredCourses = courses || [];
+  let filteredCourses = (courses || []).filter(
+    (course) => !ownedCourseIds.has(course.id),
+  );
 
   if (!showAll) {
     filteredCourses = filteredCourses.slice(0, previewCount);
@@ -120,7 +122,6 @@ export default function CourseList({
             isAtEnd={isAtEndMobile}
             scrollAxis={scrollAxis}
             gridWrapperRef={gridWrapperRefMobile}
-            ownedCourseIds={ownedCourseIds}
           />
           <PCLayout
             activeTab={activeTab}
@@ -132,7 +133,6 @@ export default function CourseList({
             isAtEnd={isAtEndDesktop}
             scrollAxis={scrollAxis}
             gridWrapperRef={gridWrapperRefDesktop}
-            ownedCourseIds={ownedCourseIds}
           />
         </>
       ) : (
@@ -189,11 +189,7 @@ export default function CourseList({
               ) : (
                 <div className={styles.courseGridB}>
                   {searchedCourses.map((course) => (
-                    <CourseCard
-                      courseItem={course}
-                      isOwned={ownedCourseIds.has(course.id)}
-                      key={course.id}
-                    />
+                    <CourseCard courseItem={course} key={course.id} />
                   ))}
                 </div>
               )}

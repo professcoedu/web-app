@@ -10,6 +10,9 @@ import styles from "./HomePage.module.css";
 import Footer from "@/app/_components/layout/Footer/Footer";
 import { fetchData } from "./_lib/data-service";
 import AnimatedCounter from "@/app/_components/common/AnimatedCounter/AnimatedCounter";
+import AnimatedHeroTitle from "@/app/_components/common/AnimatedHeroTitle/AnimatedHeroTitle";
+import AnimateUp from "@/app/_components/common/AnimateUp/AnimateUp";
+import AnimatedScaleIn from "@/app/_components/common/AnimatedScaleIn/AnimatedScaleIn";
 import PagesStack from "./_components/common/PagesStack/PagesStack";
 
 export default function Page() {
@@ -18,21 +21,26 @@ export default function Page() {
     <section className={styles.homepage}>
       <div className="container">
         <div className={styles.hero}>
-          <h1 className={` boldFont ${styles.title}`}>
+          <AnimatedHeroTitle className={` boldFont ${styles.title}`}>
             Pass your professional exams with ease the first time
-          </h1>
-          <p className={`lightFont ${styles.desc}`}>
+          </AnimatedHeroTitle>
+          <AnimatedHeroTitle
+            as="p"
+            className={`lightFont ${styles.desc}`}
+            from="above"
+            delay={0.4}
+          >
             We offer you/provide a variety of professional courses and
             certification from top education providers (from around the world).
             Learn with Professco today!
-          </p>
-          <div>
+          </AnimatedHeroTitle>
+          <AnimatedScaleIn delay={0.4}>
             <Link href="/courses">
               <button className={`filled ${styles.herobtn}`}>
                 <p>Explore our courses</p>
               </button>
             </Link>
-          </div>
+          </AnimatedScaleIn>
         </div>
       </div>
 
@@ -64,11 +72,19 @@ export default function Page() {
               <PagesStack srcs={pages} />
             </div>
             <div className={styles.boxB}>
-              <h1 className="boldFont">Become certified</h1>
-              <p className={`lightFont ${styles.txt}`}>
+              <AnimateUp as="h1" className="boldFont">
+                Become certified
+              </AnimateUp>
+              <AnimatedHeroTitle
+                as="p"
+                className={`lightFont ${styles.txt}`}
+                from="above"
+                delay={0.4}
+                viewportTrigger
+              >
                 Improve your resume, expand your abilities, start a new career
                 path by becoming a certified professional. Join us to start.
-              </p>
+              </AnimatedHeroTitle>
               <div className={styles.btnPack}>
                 <Link href="/getstarted">
                   <button className="filled">
@@ -102,7 +118,9 @@ export default function Page() {
               <h3 className="boldFont">
                 <AnimatedCounter to={5000} suffix="+" />
               </h3>
-              <p>Professionals prepare with Professco</p>
+              <AnimatedHeroTitle as="p" from="above" delay={0.4} viewportTrigger>
+                Professionals prepare with Professco
+              </AnimatedHeroTitle>
             </div>
           </div>
         </div>
@@ -112,15 +130,21 @@ export default function Page() {
         <div className={`container ${styles.segDWrapper}`}>
           <div className={styles.segDFrame}>
             <div className={styles.reviewHero}>
-              <h1 className="boldFont">
+              <AnimateUp as="h1" className="boldFont">
                 What professionals like you are saying
-              </h1>
-              <p className={`lightFont ${styles.txt}`}>
+              </AnimateUp>
+              <AnimatedHeroTitle
+                as="p"
+                className={`lightFont ${styles.txt}`}
+                from="above"
+                delay={0.4}
+                viewportTrigger
+              >
                 Very impressed about the quality of learning. It is properly
                 planned out with engaging and necessary materials from very well
                 practiced professionals. Glad to say I&apos;m now certified in
                 my field and now looking forward to taking more online classes
-              </p>
+              </AnimatedHeroTitle>
               <div className={styles.btnPackB}>
                 <button className="filled">
                   <p>Get started</p>
@@ -179,12 +203,20 @@ export default function Page() {
         <div className={`container ${styles.segEWrapper}`}>
           <div className={styles.segEFrame}>
             <div className={styles.boxC}>
-              <h1 className="boldFont">Lecture on Professco</h1>
-              <p className={`lightFont ${styles.txt}`}>
+              <AnimateUp as="h1" className="boldFont">
+                Lecture on Professco
+              </AnimateUp>
+              <AnimatedHeroTitle
+                as="p"
+                className={`lightFont ${styles.txt}`}
+                from="above"
+                delay={0.4}
+                viewportTrigger
+              >
                 Join (thousands of) qualified professionals/instructors from all
                 over the world to teach (thousands/millions) of students on
                 Professco.
-              </p>
+              </AnimatedHeroTitle>
               <div className={styles.btnPackB}>
                 <button className="filled">
                   <p>Get started</p>
@@ -210,17 +242,31 @@ export default function Page() {
 
       <section className={styles.segF}>
         <div className={`container ${styles.segFWrapper}`}>
-          <h1 className="boldFont" style={{ marginBottom: "22px" }}>
+          <AnimateUp as="h1" className="boldFont" style={{ marginBottom: "22px" }}>
             FAQs
-          </h1>
-          <p className={styles.txt}>Search and get answers to your enquiries</p>
+          </AnimateUp>
+          <AnimatedHeroTitle
+            as="p"
+            className={styles.txt}
+            from="above"
+            delay={0.4}
+            viewportTrigger
+          >
+            Search and get answers to your enquiries
+          </AnimatedHeroTitle>
           <Faqs />
-          <h1 className="boldFont" style={{ marginBottom: "16px" }}>
+          <AnimateUp as="h1" className="boldFont" style={{ marginBottom: "16px" }}>
             Still have a question?
-          </h1>
-          <p className={styles.txt}>
+          </AnimateUp>
+          <AnimatedHeroTitle
+            as="p"
+            className={styles.txt}
+            from="above"
+            delay={0.4}
+            viewportTrigger
+          >
             Click the button below to leave your questions
-          </p>
+          </AnimatedHeroTitle>
           <Link href="/contact">
             <button className={`outlined ${styles.contactBtn}`}>
               <p>Contact us</p>
@@ -230,16 +276,23 @@ export default function Page() {
             <div className={styles.boxD}>
               <div className={styles.segFFrame}>
                 <p style={{ marginBottom: "16px" }}>Learn</p>
-                <h2
+                <AnimateUp
+                  as="h2"
                   className={`boldFont ${styles.guidesHeading}`}
                   style={{ marginBottom: "16px" }}
                 >
                   Guides and Resources to help you
-                </h2>
-                <p className={`lightFont ${styles.guidesDesc}`}>
+                </AnimateUp>
+                <AnimatedHeroTitle
+                  as="p"
+                  className={`lightFont ${styles.guidesDesc}`}
+                  from="above"
+                  delay={0.4}
+                  viewportTrigger
+                >
                   Learn from vetted and certified chartered professionals with
                   proven track records
-                </p>
+                </AnimatedHeroTitle>
               </div>
 
               <button className={`outlined ${styles.guidesBtn}`}>
